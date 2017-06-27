@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">BookListingApp</string>
+
+    <string name="search_books">Search Your Book In Here...</string>
+    <string name="search_button">Search</string>
+
+    <string name="no_books">There are no books found.</string>
+    <string name="no_internet">There is no Internet connection available.</string>
+</resources>
