@@ -30,7 +30,6 @@ public class QueryUtils {
      */
     public static List<Book> fetchEarthquakeData(String requestUrl) {
 
-        Log.i(LOG_TAG, "Test: fetchEarthquakeData() called ...");
         // Create URL object
         URL url = createUrl(requestUrl);
 

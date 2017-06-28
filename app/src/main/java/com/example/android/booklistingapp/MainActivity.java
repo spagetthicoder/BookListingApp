@@ -23,7 +23,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     public static final String LOG_TAG = MainActivity.class.getName();
 
-    /** Adapter for the list of books */
+    /**
+     * Adapter for the list of books
+     */
     private BookAdapter mAdapter;
 
     /**
@@ -31,48 +33,26 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
      */
     private static final int BOOK_LOADER_ID = 1;
 
-    /** URL for Book data from the Google Books API */
-    private static String GOOGLEBOOKS_REQUEST_URL =
+    /**
+     * URL for Book data from the Google Books API
+     */
+    private static String googleBooks_request_url =
             "https://www.googleapis.com/books/v1/volumes?q=android&maxResults=40";
 
     private String searchBook;
 
-    /** TextView that is displayed when the list is empty */
+    private boolean isConected;
+
+    private boolean isConectedSearchButton;
+    /**
+     * TextView that is displayed when the list is empty
+     */
     private TextView mEmptyStateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        final Button searchButton = (Button) findViewById(R.id.search_button);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText searchField = (EditText) findViewById(R.id.search_field);
-                searchBook = searchField.getText().toString();
-
-                GOOGLEBOOKS_REQUEST_URL = "https://www.googleapis.com/books/v1/volumes?q=" + searchBook + "&maxResults=40";
-
-                getLoaderManager().restartLoader(0, null, MainActivity.this);
-                Toast.makeText(MainActivity.this, "Test: " + searchBook, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        ListView listView = (ListView) findViewById(R.id.list);
-
-        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
-        listView.setEmptyView(mEmptyStateTextView);
-
-        // Create a new adapter that takes the list of books as input
-        mAdapter  = new BookAdapter(this, new ArrayList<Book>());
-
-        // Set the adapter on the {@link ListView}
-        // so the list can be populated in the user interface
-        listView.setAdapter(mAdapter);
-
-
-        Log.i(LOG_TAG, "Test: calling initLoader method ...");
 
         // Get a reference to the ConnectivityManager to check state of network connectivity
         ConnectivityManager connMgr = (ConnectivityManager)
@@ -81,8 +61,54 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         // Get details on the currently active default data network
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
+        isConected = networkInfo != null && networkInfo.isConnected();
+
+        final Button searchButton = (Button) findViewById(R.id.search_button);
+
+        final ListView listView = (ListView) findViewById(R.id.list);
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get a reference to the ConnectivityManager to check state of network connectivity
+                ConnectivityManager connMgr1 = (ConnectivityManager)
+                        getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                // Get details on the currently active default data network
+                NetworkInfo networkInfo1 = connMgr1.getActiveNetworkInfo();
+
+                isConectedSearchButton = networkInfo1 != null && networkInfo1.isConnected();
+
+                if (isConectedSearchButton) {
+                    EditText searchField = (EditText) findViewById(R.id.search_field);
+                    searchBook = searchField.getText().toString();
+
+                    googleBooks_request_url = "https://www.googleapis.com/books/v1/volumes?q=" + searchBook + "&maxResults=40";
+
+                    View loadingIndicator = findViewById(R.id.loading_spinner);
+                    loadingIndicator.setVisibility(View.VISIBLE);
+                    listView.setVisibility(View.GONE);
+
+                    getLoaderManager().restartLoader(0, null, MainActivity.this);
+                    Toast.makeText(MainActivity.this, "Please wait until the data gets fetched!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, "No Internet connection available! ", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        listView.setEmptyView(mEmptyStateTextView);
+
+        // Create a new adapter that takes the list of books as input
+        mAdapter = new BookAdapter(this, new ArrayList<Book>());
+
+        // Set the adapter on the {@link ListView}
+        // so the list can be populated in the user interface
+        listView.setAdapter(mAdapter);
+
         // If there is a network connection, fetch data
-        if (networkInfo != null && networkInfo.isConnected()) {
+        if (isConected) {
             // Get a reference to the LoaderManager, in order to interact with loaders.
             LoaderManager loaderManager = getLoaderManager();
 
@@ -106,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.i(LOG_TAG, "Test: onCreateLoader() called ...");
 
         // Create a new loader for the given URL
-        return new BookLoader(this, GOOGLEBOOKS_REQUEST_URL);
+        return new BookLoader(this, googleBooks_request_url);
     }
 
     @Override
@@ -130,8 +156,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onLoaderReset(Loader<List<Book>> loader) {
-        Log.i(LOG_TAG, "Test: onLoaderReset() called ...");
-
         // Loader reset, so we can clear out our existing data.
         mAdapter.clear();
     }

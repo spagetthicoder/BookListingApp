@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.android.booklistingapp.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.example.android.booklistingapp.MainActivity">
 
     <EditText
         android:id="@+id/search_field"
@@ -12,29 +12,33 @@
         android:layout_height="wrap_content"
         android:hint="@string/search_books"
         android:inputType="textMultiLine" />
+
     <Button
         android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/search_button"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:text="@string/search_button" />
+
     <ProgressBar
         android:id="@+id/loading_spinner"
         style="@style/Widget.AppCompat.ProgressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center" />
+
     <TextView
         android:id="@+id/empty_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:textAppearance="?android:textAppearanceMedium"/>
+        android:textAppearance="?android:textAppearanceMedium" />
+
     <ListView
         android:id="@+id/list"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:divider="@null"
-        android:dividerHeight="10dp"/>
+        android:dividerHeight="10dp"
+        android:orientation="vertical" />
 </LinearLayout>
