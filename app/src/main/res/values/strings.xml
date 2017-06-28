@@ -6,4 +6,5 @@
 
     <string name="no_books">There are no books found.</string>
     <string name="no_internet">There is no Internet connection available.</string>
+    <string name="start_searching">You can start searching for books now!</string>
 </resources>

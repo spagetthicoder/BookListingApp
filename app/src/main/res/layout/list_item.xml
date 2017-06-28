@@ -13,6 +13,8 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:textSize="16sp"
+        android:textAppearance="?android:textAppearanceLarge"
+        android:textStyle="bold"
         tools:text="Harry Potter" />
 
     <TextView
@@ -23,6 +25,6 @@
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
         android:textSize="16sp"
-        tools:text="Harry Potter" />
+        tools:text="J K Rowlin" />
 
 </LinearLayout>
