@@ -87,8 +87,13 @@ public class QueryUtils {
                 // Extract the value for the key called "title"
                 String title = volumeInfo.getString("title");
 
-                // Extract the 1st value for the JSONArray called "authors"
-                String author = volumeInfo.getJSONArray("authors").get(0).toString();
+                String author;
+                if (volumeInfo.has("authors")) {
+                    // Extract the 1st value for the JSONArray called "authors"
+                    author = volumeInfo.getJSONArray("authors").get(0).toString();
+                } else {
+                    author = "No Author";
+                }
 
                 // Create a new {@link Book} object with the title and 1st author from the JSON response.
                 Book book = new Book(title, author);

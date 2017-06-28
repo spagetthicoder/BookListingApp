@@ -66,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         final ListView listView = (ListView) findViewById(R.id.list);
 
+        //Initializing the loader every time the activity is initialized to avoid losing data when the devices is rotated
+        getLoaderManager().initLoader(0, null, MainActivity.this);
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
