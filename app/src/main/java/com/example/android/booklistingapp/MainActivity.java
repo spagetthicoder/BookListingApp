@@ -36,14 +36,13 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     /**
      * URL for Book data from the Google Books API
      */
-    private static String googleBooks_request_url =
-            "https://www.googleapis.com/books/v1/volumes?q=android&maxResults=40";
+    private static String googleBooksRequestUrl;
 
     private String searchBook;
 
     private boolean isConected;
 
-    private boolean isConectedSearchButton;
+    private boolean isConnectedSearchButton;
     /**
      * TextView that is displayed when the list is empty
      */
@@ -77,13 +76,15 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 // Get details on the currently active default data network
                 NetworkInfo networkInfo1 = connMgr1.getActiveNetworkInfo();
 
-                isConectedSearchButton = networkInfo1 != null && networkInfo1.isConnected();
+                isConnectedSearchButton = networkInfo1 != null && networkInfo1.isConnected();
 
-                if (isConectedSearchButton) {
+                if (isConnectedSearchButton) {
+                    mEmptyStateTextView.setVisibility(View.GONE);
+
                     EditText searchField = (EditText) findViewById(R.id.search_field);
                     searchBook = searchField.getText().toString();
 
-                    googleBooks_request_url = "https://www.googleapis.com/books/v1/volumes?q=" + searchBook + "&maxResults=40";
+                    googleBooksRequestUrl = "https://www.googleapis.com/books/v1/volumes?q=" + searchBook + "&maxResults=40";
 
                     View loadingIndicator = findViewById(R.id.loading_spinner);
                     loadingIndicator.setVisibility(View.VISIBLE);
@@ -109,13 +110,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         // If there is a network connection, fetch data
         if (isConected) {
-            // Get a reference to the LoaderManager, in order to interact with loaders.
-            LoaderManager loaderManager = getLoaderManager();
+            View loadingIndicator = findViewById(R.id.loading_spinner);
+            loadingIndicator.setVisibility(View.GONE);
 
-            // Initialize the loader. Pass in the int ID constant defined above and pass in null for
-            // the bundle. Pass in this activity for the LoaderCallbacks parameter (which is valid
-            // because this activity implements the LoaderCallbacks interface).
-            loaderManager.initLoader(BOOK_LOADER_ID, null, this);
+            // Infrom users that the app is ready for them to use
+            mEmptyStateTextView.setText(R.string.start_searching);
+
         } else {
             // Otherwise, display error
             // First, hide loading indicator so error message will be visible
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         Log.i(LOG_TAG, "Test: onCreateLoader() called ...");
 
         // Create a new loader for the given URL
-        return new BookLoader(this, googleBooks_request_url);
+        return new BookLoader(this, googleBooksRequestUrl);
     }
 
     @Override
