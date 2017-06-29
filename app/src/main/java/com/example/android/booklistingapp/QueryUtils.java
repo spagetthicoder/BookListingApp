@@ -69,31 +69,42 @@ public class QueryUtils {
             // Create a JSONObject from the JSON response string
             JSONObject baseJsonResponse = new JSONObject(bookJSON);
 
-            // Extract the JSONArray associated with the key called "items",
-            // which represents a list of features (or item).
-            JSONArray bookArray = baseJsonResponse.getJSONArray("items");
+            if (baseJsonResponse.has("items")) {
+                // Extract the JSONArray associated with the key called "items",
+                // which represents a list of features (or item).
+                JSONArray bookArray = baseJsonResponse.getJSONArray("items");
 
-            // For each Book in the bookArray, create an {@link Book} object
-            for (int i = 0; i < bookArray.length(); i++) {
+                // For each Book in the bookArray, create an {@link Book} object
+                for (int i = 0; i < bookArray.length(); i++) {
 
-                // Get a single book at position i within the list of earthquakes
-                JSONObject currentBook = bookArray.getJSONObject(i);
+                    // Get a single book at position i within the list of earthquakes
+                    JSONObject currentBook = bookArray.getJSONObject(i);
 
-                // For a given book, extract the JSONObject associated with the
-                // key called "volumeInfo", which represents a list of all details
-                // for that book.
-                JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
+                    // For a given book, extract the JSONObject associated with the
+                    // key called "volumeInfo", which represents a list of all details
+                    // for that book.
+                    JSONObject volumeInfo = currentBook.getJSONObject("volumeInfo");
 
-                // Extract the value for the key called "title"
-                String title = volumeInfo.getString("title");
+                    // Extract the value for the key called "title"
+                    String title = volumeInfo.getString("title");
 
-                String author;
-                if (volumeInfo.has("authors")) {
-                    // Extract the 1st value for the JSONArray called "authors"
-                    author = volumeInfo.getJSONArray("authors").get(0).toString();
-                } else {
-                    author = "No Author";
+                    String author;
+                    if (volumeInfo.has("authors")) {
+                        // Extract the 1st value for the JSONArray called "authors"
+                        author = volumeInfo.getJSONArray("authors").get(0).toString();
+                    } else {
+                        author = "No Author";
+                    }
+
+                    // Create a new {@link Book} object with the title and 1st author from the JSON response.
+                    Book book = new Book(title, author);
+
+                    // Add the new {@link Book} to the list of books.
+                    books.add(book);
                 }
+            } else {
+                String title = "No Books Found.";
+                String author = "";
 
                 // Create a new {@link Book} object with the title and 1st author from the JSON response.
                 Book book = new Book(title, author);
